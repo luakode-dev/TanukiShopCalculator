@@ -32,8 +32,21 @@ export default function Calculator() {
     const [suggestedPrice, setSuggestedPrice] = useState(0)
     const [netProfit, setNetProfit] = useState(0)
 
-    // Load saved state on mount
+    // Load saved state and global settings on mount
     useEffect(() => {
+        // Load global settings first
+        const savedSettings = localStorage.getItem('tanuki_settings')
+        if (savedSettings) {
+            try {
+                const settings = JSON.parse(savedSettings)
+                if (settings.hourlyRate) setHourlyRate(settings.hourlyRate)
+                if (settings.electricityCostPerHour) setElectricityCostPerHour(settings.electricityCostPerHour)
+            } catch (e) {
+                console.error('Error loading settings:', e)
+            }
+        }
+
+        // Then load calculator state (which can override settings)
         const savedState = localStorage.getItem('tanuki_calculator_state')
         if (savedState) {
             try {
@@ -50,9 +63,6 @@ export default function Calculator() {
                 setTaxRate(parsed.taxRate || 21)
                 setIsMercadoLibre(parsed.isMercadoLibre || false)
                 setPlatformCommission(parsed.platformCommission || 15)
-                // Configuration values might come from global settings later, but for now we load them too if saved
-                if (parsed.hourlyRate) setHourlyRate(parsed.hourlyRate)
-                if (parsed.electricityCostPerHour) setElectricityCostPerHour(parsed.electricityCostPerHour)
             } catch (e) {
                 console.error('Error loading calculator state:', e)
             }
@@ -131,6 +141,60 @@ export default function Calculator() {
         }).format(value)
     }
 
+    const saveProduct = () => {
+        // Validate product name
+        if (!productName.trim()) {
+            alert('Por favor, ingresa un nombre para el producto')
+            return
+        }
+
+        // Create product object
+        const product = {
+            id: Date.now(), // Unique ID based on timestamp
+            name: productName,
+            category: category,
+            baseCost: baseCost,
+            transferPaperCost: transferPaperCost,
+            inkCost: inkCost,
+            packagingCost: packagingCost,
+            productionTime: productionTime,
+            pressingTime: pressingTime,
+            laborCost: laborCost,
+            electricityCost: electricityCost,
+            totalManufacturingCost: totalManufacturingCost,
+            profitMargin: profitMargin,
+            taxRate: taxRate,
+            isMercadoLibre: isMercadoLibre,
+            platformCommission: platformCommission,
+            suggestedPrice: suggestedPrice,
+            netProfit: netProfit,
+            createdAt: new Date().toISOString()
+        }
+
+        // Load existing products
+        let products = []
+        try {
+            const savedProducts = localStorage.getItem('tanuki_products')
+            if (savedProducts) {
+                products = JSON.parse(savedProducts)
+            }
+        } catch (e) {
+            console.error('Error loading products:', e)
+        }
+
+        // Add new product
+        products.push(product)
+
+        // Save to localStorage
+        try {
+            localStorage.setItem('tanuki_products', JSON.stringify(products))
+            alert(`✅ Producto "${productName}" guardado exitosamente`)
+        } catch (e) {
+            console.error('Error saving product:', e)
+            alert('❌ Error al guardar el producto. Por favor, intenta nuevamente.')
+        }
+    }
+
     return (
         <section className="content-fade-in">
             <div className="mb-6">
@@ -205,6 +269,7 @@ export default function Calculator() {
                                     type="number"
                                     value={baseCost}
                                     onChange={(e) => setBaseCost(parseFloat(e.target.value) || 0)}
+                                    onFocus={(e) => e.target.select()}
                                     placeholder="0.00"
                                     step="0.01"
                                     min="0"
@@ -220,6 +285,7 @@ export default function Calculator() {
                                     type="number"
                                     value={transferPaperCost}
                                     onChange={(e) => setTransferPaperCost(parseFloat(e.target.value) || 0)}
+                                    onFocus={(e) => e.target.select()}
                                     placeholder="0.00"
                                     step="0.01"
                                     min="0"
@@ -235,6 +301,7 @@ export default function Calculator() {
                                     type="number"
                                     value={inkCost}
                                     onChange={(e) => setInkCost(parseFloat(e.target.value) || 0)}
+                                    onFocus={(e) => e.target.select()}
                                     placeholder="0.00"
                                     step="0.01"
                                     min="0"
@@ -250,6 +317,7 @@ export default function Calculator() {
                                     type="number"
                                     value={packagingCost}
                                     onChange={(e) => setPackagingCost(parseFloat(e.target.value) || 0)}
+                                    onFocus={(e) => e.target.select()}
                                     placeholder="0.00"
                                     step="0.01"
                                     min="0"
@@ -279,6 +347,7 @@ export default function Calculator() {
                                     type="number"
                                     value={productionTime}
                                     onChange={(e) => setProductionTime(parseFloat(e.target.value) || 0)}
+                                    onFocus={(e) => e.target.select()}
                                     placeholder="0"
                                     step="1"
                                     min="0"
@@ -297,6 +366,7 @@ export default function Calculator() {
                                     type="number"
                                     value={pressingTime}
                                     onChange={(e) => setPressingTime(parseFloat(e.target.value) || 0)}
+                                    onFocus={(e) => e.target.select()}
                                     placeholder="0"
                                     step="1"
                                     min="0"
@@ -315,6 +385,7 @@ export default function Calculator() {
                                     type="number"
                                     value={hourlyRate}
                                     onChange={(e) => setHourlyRate(parseFloat(e.target.value) || 0)}
+                                    onFocus={(e) => e.target.select()}
                                     placeholder="500"
                                     step="10"
                                     min="0"
@@ -330,6 +401,7 @@ export default function Calculator() {
                                     type="number"
                                     value={electricityCostPerHour}
                                     onChange={(e) => setElectricityCostPerHour(parseFloat(e.target.value) || 0)}
+                                    onFocus={(e) => e.target.select()}
                                     placeholder="100"
                                     step="10"
                                     min="0"
@@ -359,6 +431,7 @@ export default function Calculator() {
                                     type="number"
                                     value={profitMargin}
                                     onChange={(e) => setProfitMargin(parseFloat(e.target.value) || 0)}
+                                    onFocus={(e) => e.target.select()}
                                     placeholder="30"
                                     step="1"
                                     min="0"
@@ -375,6 +448,7 @@ export default function Calculator() {
                                     type="number"
                                     value={taxRate}
                                     onChange={(e) => setTaxRate(parseFloat(e.target.value) || 0)}
+                                    onFocus={(e) => e.target.select()}
                                     placeholder="21"
                                     step="0.5"
                                     min="0"
@@ -406,6 +480,7 @@ export default function Calculator() {
                                         type="number"
                                         value={platformCommission}
                                         onChange={(e) => setPlatformCommission(parseFloat(e.target.value) || 0)}
+                                        onFocus={(e) => e.target.select()}
                                         placeholder="15"
                                         step="0.5"
                                         min="0"
@@ -479,6 +554,17 @@ export default function Calculator() {
                                 }
                             </p>
                         </div>
+
+                        {/* Save Button */}
+                        <button
+                            onClick={saveProduct}
+                            className="w-full bg-gradient-to-r from-tanuki-500 to-tanuki-600 hover:from-tanuki-600 hover:to-tanuki-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 mt-4 flex items-center justify-center space-x-2"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                            </svg>
+                            <span>Guardar Producto</span>
+                        </button>
 
                         {/* Info Card */}
                         <div className="bg-gray-50 rounded-xl p-4 mt-4 border border-gray-200">
