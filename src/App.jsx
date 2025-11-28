@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { CurrencyProvider } from './contexts/CurrencyContext'
 import Layout from './components/Layout'
 import Dashboard from './components/Dashboard'
 import Calculator from './components/Calculator'
@@ -73,15 +74,17 @@ function App() {
     }
 
     return (
-        <Layout
-            currentSection={currentSection}
-            navigateToSection={navigateToSection}
-            isMobileMenuOpen={isMobileMenuOpen}
-            toggleMobileMenu={toggleMobileMenu}
-            closeMobileMenu={closeMobileMenu}
-        >
-            {renderSection()}
-        </Layout>
+        <CurrencyProvider>
+            <Layout
+                currentSection={currentSection}
+                navigateToSection={navigateToSection}
+                isMobileMenuOpen={isMobileMenuOpen}
+                toggleMobileMenu={toggleMobileMenu}
+                closeMobileMenu={closeMobileMenu}
+            >
+                {renderSection()}
+            </Layout>
+        </CurrencyProvider>
     )
 }
 

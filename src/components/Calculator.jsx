@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react'
+import { useCurrency } from '../contexts/CurrencyContext'
 
 export default function Calculator() {
+    const { getCurrentBcvRate, getCurrentParaleloRate } = useCurrency()
+
     // Form state
     const [productName, setProductName] = useState('')
     const [category, setCategory] = useState('Textil')
+    const [selectedCurrency, setSelectedCurrency] = useState('paralelo') // 'bcv' or 'paralelo'
 
     // Direct costs
     const [baseCost, setBaseCost] = useState(0)
@@ -139,6 +143,19 @@ export default function Calculator() {
             currency: 'ARS',
             minimumFractionDigits: 2
         }).format(value)
+    }
+
+    const formatBolivares = (usdValue) => {
+        const rate = selectedCurrency === 'bcv' ? getCurrentBcvRate() : getCurrentParaleloRate()
+        const bsValue = usdValue * rate
+        return new Intl.NumberFormat('es-VE', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(bsValue)
+    }
+
+    const getCurrentRate = () => {
+        return selectedCurrency === 'bcv' ? getCurrentBcvRate() : getCurrentParaleloRate()
     }
 
     const saveProduct = () => {
@@ -457,6 +474,54 @@ export default function Calculator() {
                                 />
                             </div>
 
+                            {/* Currency Selector */}
+                            <div className="md:col-span-2 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
+                                <label className="block text-sm font-semibold text-gray-900 mb-3">
+                                    💱 Tasa de Cambio para Conversión a Bolívares
+                                </label>
+                                <div className="flex flex-col sm:flex-row gap-3">
+                                    <label className="flex items-center space-x-3 cursor-pointer group flex-1 bg-white rounded-lg p-3 border-2 transition-all hover:border-green-300"
+                                        style={{ borderColor: selectedCurrency === 'bcv' ? '#10b981' : '#e5e7eb' }}>
+                                        <input
+                                            type="radio"
+                                            name="currency"
+                                            value="bcv"
+                                            checked={selectedCurrency === 'bcv'}
+                                            onChange={(e) => setSelectedCurrency(e.target.value)}
+                                            className="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500 cursor-pointer"
+                                        />
+                                        <div className="flex-1">
+                                            <span className="text-sm font-medium text-gray-900 flex items-center gap-1">
+                                                🏛️ BCV (Oficial)
+                                            </span>
+                                            <span className="text-xs text-green-700 font-semibold">
+                                                1 USD = Bs {getCurrentBcvRate().toFixed(2)}
+                                            </span>
+                                        </div>
+                                    </label>
+
+                                    <label className="flex items-center space-x-3 cursor-pointer group flex-1 bg-white rounded-lg p-3 border-2 transition-all hover:border-green-300"
+                                        style={{ borderColor: selectedCurrency === 'paralelo' ? '#10b981' : '#e5e7eb' }}>
+                                        <input
+                                            type="radio"
+                                            name="currency"
+                                            value="paralelo"
+                                            checked={selectedCurrency === 'paralelo'}
+                                            onChange={(e) => setSelectedCurrency(e.target.value)}
+                                            className="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500 cursor-pointer"
+                                        />
+                                        <div className="flex-1">
+                                            <span className="text-sm font-medium text-gray-900 flex items-center gap-1">
+                                                💸 Paralelo
+                                            </span>
+                                            <span className="text-xs text-green-700 font-semibold">
+                                                1 USD = Bs {getCurrentParaleloRate().toFixed(2)}
+                                            </span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
                             <div className="md:col-span-2">
                                 <label className="flex items-center space-x-3 cursor-pointer group">
                                     <input
@@ -511,6 +576,9 @@ export default function Calculator() {
                             <p className="text-3xl font-bold text-white mb-1">
                                 {formatCurrency(totalManufacturingCost)}
                             </p>
+                            <p className="text-lg text-white/80 font-medium mb-1">
+                                ≈ {formatBolivares(totalManufacturingCost)}
+                            </p>
                             <p className="text-xs text-blue-100">
                                 Incluye costos directos e indirectos
                             </p>
@@ -529,6 +597,9 @@ export default function Calculator() {
                             <p className="text-3xl font-bold text-white mb-1">
                                 {formatCurrency(suggestedPrice)}
                             </p>
+                            <p className="text-lg text-white/80 font-medium mb-1">
+                                ≈ {formatBolivares(suggestedPrice)}
+                            </p>
                             <p className="text-xs text-tanuki-100">
                                 Con margen, impuestos {isMercadoLibre && '+ comisión ML'}
                             </p>
@@ -546,6 +617,9 @@ export default function Calculator() {
                             </div>
                             <p className="text-3xl font-bold text-white mb-1">
                                 {formatCurrency(netProfit)}
+                            </p>
+                            <p className="text-lg text-white/80 font-medium mb-1">
+                                ≈ {formatBolivares(netProfit)}
                             </p>
                             <p className="text-xs text-white/90">
                                 {totalManufacturingCost > 0

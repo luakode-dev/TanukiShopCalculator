@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useCurrency } from '../contexts/CurrencyContext'
 
 const navItems = [
     {
@@ -48,6 +49,8 @@ export default function Layout({
     closeMobileMenu,
     children
 }) {
+    const { getCurrentBcvRate, getCurrentParaleloRate, isLoading, error } = useCurrency()
+
     // Prevent body scroll when mobile menu is open
     useEffect(() => {
         if (isMobileMenuOpen) {
@@ -156,8 +159,8 @@ export default function Layout({
             {/* Main Content */}
             <main className="flex-1 overflow-y-auto">
                 {/* Mobile Header */}
-                <header className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-10">
-                    <div className="flex items-center justify-between">
+                <header className="lg:hidden bg-white border-b border-gray-200 sticky top-0 z-10">
+                    <div className="px-4 py-3 flex items-center justify-between">
                         <button
                             onClick={toggleMobileMenu}
                             className="text-gray-600 hover:text-tanuki-600 transition-colors"
@@ -169,7 +172,75 @@ export default function Layout({
                         <h2 className="text-lg font-semibold text-gray-800">Tanuki Shop Admin</h2>
                         <div className="w-6" />
                     </div>
+
+                    {/* Currency Ticker - Mobile */}
+                    {!isLoading && !error && (
+                        <div className="px-4 pb-3">
+                            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg px-3 py-2 flex items-center justify-center gap-3 text-xs">
+                                <div className="flex items-center gap-1">
+                                    <span>🏛️</span>
+                                    <span className="text-gray-600">BCV:</span>
+                                    <span className="font-semibold text-green-700">Bs {getCurrentBcvRate().toFixed(2)}</span>
+                                </div>
+                                <div className="w-px h-4 bg-green-300" />
+                                <div className="flex items-center gap-1">
+                                    <span>💸</span>
+                                    <span className="text-gray-600">Paralelo:</span>
+                                    <span className="font-semibold text-green-700">Bs {getCurrentParaleloRate().toFixed(2)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {isLoading && (
+                        <div className="px-4 pb-3">
+                            <div className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center text-xs text-gray-500">
+                                Cargando tasas...
+                            </div>
+                        </div>
+                    )}
+
+                    {error && (
+                        <div className="px-4 pb-3">
+                            <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-center text-xs text-red-600">
+                                Error al cargar tasas
+                            </div>
+                        </div>
+                    )}
                 </header>
+
+                {/* Desktop Header with Currency Ticker */}
+                <div className="hidden lg:block bg-white border-b border-gray-200 sticky top-0 z-10">
+                    <div className="px-8 py-3">
+                        {!isLoading && !error && (
+                            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg px-4 py-2 flex items-center justify-center gap-4 text-sm">
+                                <div className="flex items-center gap-2">
+                                    <span>🏛️</span>
+                                    <span className="text-gray-600">BCV (Oficial):</span>
+                                    <span className="font-semibold text-green-700">Bs {getCurrentBcvRate().toFixed(2)}</span>
+                                </div>
+                                <div className="w-px h-5 bg-green-300" />
+                                <div className="flex items-center gap-2">
+                                    <span>💸</span>
+                                    <span className="text-gray-600">Paralelo:</span>
+                                    <span className="font-semibold text-green-700">Bs {getCurrentParaleloRate().toFixed(2)}</span>
+                                </div>
+                            </div>
+                        )}
+
+                        {isLoading && (
+                            <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-center text-sm text-gray-500">
+                                Cargando tasas de cambio...
+                            </div>
+                        )}
+
+                        {error && (
+                            <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-2 text-center text-sm text-red-600">
+                                ⚠️ Error al cargar tasas de cambio
+                            </div>
+                        )}
+                    </div>
+                </div>
 
                 {/* Content */}
                 <div className="p-6 lg:p-8">
