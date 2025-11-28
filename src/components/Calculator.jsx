@@ -59,11 +59,45 @@ export default function Calculator() {
                 setIsMercadoLibre(product.isMercadoLibre)
                 setPlatformCommission(product.platformCommission)
 
-                // Clear the edit flag so it doesn't persist on reload if user navigates away
+                // Remove the temporary edit flag
                 localStorage.removeItem('tanuki_product_to_edit')
                 return // Skip loading other states if editing
             } catch (e) {
                 console.error('Error loading product to edit:', e)
+            }
+        }
+
+        // Check if we have a saved editingId (from page reload)
+        const savedState = localStorage.getItem('tanuki_calculator_state')
+        if (savedState) {
+            try {
+                const parsed = JSON.parse(savedState)
+                if (parsed.editingId) {
+                    // We're in edit mode, reload the product from products list
+                    const savedProducts = localStorage.getItem('tanuki_products')
+                    if (savedProducts) {
+                        const products = JSON.parse(savedProducts)
+                        const product = products.find(p => p.id === parsed.editingId)
+                        if (product) {
+                            setEditingId(product.id)
+                            setProductName(product.name)
+                            setCategory(product.category)
+                            setBaseCost(product.baseCost)
+                            setTransferPaperCost(product.transferPaperCost)
+                            setInkCost(product.inkCost)
+                            setPackagingCost(product.packagingCost)
+                            setProductionTime(product.productionTime)
+                            setPressingTime(product.pressingTime)
+                            setProfitMargin(product.profitMargin)
+                            setTaxRate(product.taxRate)
+                            setIsMercadoLibre(product.isMercadoLibre)
+                            setPlatformCommission(product.platformCommission)
+                            return // Skip loading other states
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('Error loading saved editing state:', e)
             }
         }
 
@@ -79,23 +113,25 @@ export default function Calculator() {
             }
         }
 
-        // Then load calculator state (which can override settings)
-        const savedState = localStorage.getItem('tanuki_calculator_state')
+        // Then load calculator state (only if not in edit mode)
         if (savedState) {
             try {
                 const parsed = JSON.parse(savedState)
-                setProductName(parsed.productName || '')
-                setCategory(parsed.category || 'Textil')
-                setBaseCost(parsed.baseCost || 0)
-                setTransferPaperCost(parsed.transferPaperCost || 0)
-                setInkCost(parsed.inkCost || 0)
-                setPackagingCost(parsed.packagingCost || 0)
-                setProductionTime(parsed.productionTime || 0)
-                setPressingTime(parsed.pressingTime || 0)
-                setProfitMargin(parsed.profitMargin || 30)
-                setTaxRate(parsed.taxRate || 21)
-                setIsMercadoLibre(parsed.isMercadoLibre || false)
-                setPlatformCommission(parsed.platformCommission || 15)
+                // Only load these if we're not editing (editingId check already happened above)
+                if (!parsed.editingId) {
+                    setProductName(parsed.productName || '')
+                    setCategory(parsed.category || 'Textil')
+                    setBaseCost(parsed.baseCost || 0)
+                    setTransferPaperCost(parsed.transferPaperCost || 0)
+                    setInkCost(parsed.inkCost || 0)
+                    setPackagingCost(parsed.packagingCost || 0)
+                    setProductionTime(parsed.productionTime || 0)
+                    setPressingTime(parsed.pressingTime || 0)
+                    setProfitMargin(parsed.profitMargin || 30)
+                    setTaxRate(parsed.taxRate || 21)
+                    setIsMercadoLibre(parsed.isMercadoLibre || false)
+                    setPlatformCommission(parsed.platformCommission || 15)
+                }
             } catch (e) {
                 console.error('Error loading calculator state:', e)
             }
@@ -118,12 +154,13 @@ export default function Calculator() {
             isMercadoLibre,
             platformCommission,
             hourlyRate,
-            electricityCostPerHour
+            electricityCostPerHour,
+            editingId // Save editingId to persist edit mode
         }
         localStorage.setItem('tanuki_calculator_state', JSON.stringify(stateToSave))
     }, [productName, category, baseCost, transferPaperCost, inkCost, packagingCost,
         productionTime, pressingTime, profitMargin, taxRate, isMercadoLibre,
-        platformCommission, hourlyRate, electricityCostPerHour])
+        platformCommission, hourlyRate, electricityCostPerHour, editingId])
 
     // Calculate costs in real-time
     useEffect(() => {
