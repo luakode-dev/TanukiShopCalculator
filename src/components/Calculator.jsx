@@ -35,6 +35,7 @@ export default function Calculator() {
     const [electricityCost, setElectricityCost] = useState(0)
     const [totalManufacturingCost, setTotalManufacturingCost] = useState(0)
     const [suggestedPrice, setSuggestedPrice] = useState(0)
+    const [exactPrice, setExactPrice] = useState(0)
     const [netProfit, setNetProfit] = useState(0)
 
     // Load saved state and global settings on mount
@@ -151,15 +152,21 @@ export default function Calculator() {
         }
 
         // Apply taxes
+        // Apply taxes
         const priceWithTax = finalPrice * (1 + taxRate / 100)
-        setSuggestedPrice(priceWithTax)
 
-        // Calculate net profit
+        // Rounding logic: Round UP to nearest integer
+        const roundedPrice = Math.ceil(priceWithTax)
+
+        setSuggestedPrice(roundedPrice)
+        setExactPrice(priceWithTax)
+
+        // Calculate net profit based on ROUNDED price
         let platformFee = 0
         if (isMercadoLibre) {
-            platformFee = priceWithTax * (platformCommission / 100)
+            platformFee = roundedPrice * (platformCommission / 100)
         }
-        const profit = priceWithTax - totalCost - platformFee
+        const profit = roundedPrice - totalCost - platformFee
         setNetProfit(profit)
 
     }, [baseCost, transferPaperCost, inkCost, packagingCost, productionTime, pressingTime,
@@ -652,9 +659,17 @@ export default function Calculator() {
                                     </svg>
                                 </div>
                             </div>
-                            <p className="text-3xl font-bold text-white mb-1">
-                                {formatCurrency(suggestedPrice)}
-                            </p>
+                            <div className="flex items-baseline flex-wrap gap-x-2 mb-1">
+                                <p className="text-3xl font-bold text-white">
+                                    {formatCurrency(exactPrice)}
+                                </p>
+                                <div className="flex items-center text-tanuki-100 bg-white/10 px-2 py-0.5 rounded-md">
+                                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    </svg>
+                                    <span className="text-lg font-semibold">{formatCurrency(suggestedPrice)}</span>
+                                </div>
+                            </div>
                             <p className="text-lg text-white/80 font-medium mb-1">
                                 ≈ {formatBolivares(suggestedPrice)}
                             </p>
