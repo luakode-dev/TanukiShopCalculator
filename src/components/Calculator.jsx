@@ -32,6 +32,56 @@ export default function Calculator() {
     const [suggestedPrice, setSuggestedPrice] = useState(0)
     const [netProfit, setNetProfit] = useState(0)
 
+    // Load saved state on mount
+    useEffect(() => {
+        const savedState = localStorage.getItem('tanuki_calculator_state')
+        if (savedState) {
+            try {
+                const parsed = JSON.parse(savedState)
+                setProductName(parsed.productName || '')
+                setCategory(parsed.category || 'Textil')
+                setBaseCost(parsed.baseCost || 0)
+                setTransferPaperCost(parsed.transferPaperCost || 0)
+                setInkCost(parsed.inkCost || 0)
+                setPackagingCost(parsed.packagingCost || 0)
+                setProductionTime(parsed.productionTime || 0)
+                setPressingTime(parsed.pressingTime || 0)
+                setProfitMargin(parsed.profitMargin || 30)
+                setTaxRate(parsed.taxRate || 21)
+                setIsMercadoLibre(parsed.isMercadoLibre || false)
+                setPlatformCommission(parsed.platformCommission || 15)
+                // Configuration values might come from global settings later, but for now we load them too if saved
+                if (parsed.hourlyRate) setHourlyRate(parsed.hourlyRate)
+                if (parsed.electricityCostPerHour) setElectricityCostPerHour(parsed.electricityCostPerHour)
+            } catch (e) {
+                console.error('Error loading calculator state:', e)
+            }
+        }
+    }, [])
+
+    // Save state on changes
+    useEffect(() => {
+        const stateToSave = {
+            productName,
+            category,
+            baseCost,
+            transferPaperCost,
+            inkCost,
+            packagingCost,
+            productionTime,
+            pressingTime,
+            profitMargin,
+            taxRate,
+            isMercadoLibre,
+            platformCommission,
+            hourlyRate,
+            electricityCostPerHour
+        }
+        localStorage.setItem('tanuki_calculator_state', JSON.stringify(stateToSave))
+    }, [productName, category, baseCost, transferPaperCost, inkCost, packagingCost,
+        productionTime, pressingTime, profitMargin, taxRate, isMercadoLibre,
+        platformCommission, hourlyRate, electricityCostPerHour])
+
     // Calculate costs in real-time
     useEffect(() => {
         // Calculate labor cost from production time
