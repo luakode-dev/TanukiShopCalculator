@@ -8,6 +8,7 @@ export default function Calculator() {
     const [productName, setProductName] = useState('')
     const [category, setCategory] = useState('Textil')
     const [selectedCurrency, setSelectedCurrency] = useState('paralelo') // 'bcv' or 'paralelo'
+    const [editingId, setEditingId] = useState(null) // ID of product being edited
 
     // Direct costs
     const [baseCost, setBaseCost] = useState(0)
@@ -38,6 +39,33 @@ export default function Calculator() {
 
     // Load saved state and global settings on mount
     useEffect(() => {
+        // Check if we are editing a product
+        const productToEdit = localStorage.getItem('tanuki_product_to_edit')
+        if (productToEdit) {
+            try {
+                const product = JSON.parse(productToEdit)
+                setEditingId(product.id)
+                setProductName(product.name)
+                setCategory(product.category)
+                setBaseCost(product.baseCost)
+                setTransferPaperCost(product.transferPaperCost)
+                setInkCost(product.inkCost)
+                setPackagingCost(product.packagingCost)
+                setProductionTime(product.productionTime)
+                setPressingTime(product.pressingTime)
+                setProfitMargin(product.profitMargin)
+                setTaxRate(product.taxRate)
+                setIsMercadoLibre(product.isMercadoLibre)
+                setPlatformCommission(product.platformCommission)
+
+                // Clear the edit flag so it doesn't persist on reload if user navigates away
+                localStorage.removeItem('tanuki_product_to_edit')
+                return // Skip loading other states if editing
+            } catch (e) {
+                console.error('Error loading product to edit:', e)
+            }
+        }
+
         // Load global settings first
         const savedSettings = localStorage.getItem('tanuki_settings')
         if (savedSettings) {
@@ -158,6 +186,19 @@ export default function Calculator() {
         return selectedCurrency === 'bcv' ? getCurrentBcvRate() : getCurrentParaleloRate()
     }
 
+    const cancelEdit = () => {
+        setEditingId(null)
+        setProductName('')
+        setBaseCost(0)
+        setTransferPaperCost(0)
+        setInkCost(0)
+        setPackagingCost(0)
+        setProductionTime(0)
+        setPressingTime(0)
+        // Reset to defaults or keep current settings? Keeping settings seems better.
+        alert('Edición cancelada')
+    }
+
     const saveProduct = () => {
         // Validate product name
         if (!productName.trim()) {
@@ -167,7 +208,7 @@ export default function Calculator() {
 
         // Create product object
         const product = {
-            id: Date.now(), // Unique ID based on timestamp
+            id: editingId || Date.now(), // Use existing ID if editing, else new timestamp
             name: productName,
             category: category,
             baseCost: baseCost,
@@ -185,7 +226,7 @@ export default function Calculator() {
             platformCommission: platformCommission,
             suggestedPrice: suggestedPrice,
             netProfit: netProfit,
-            createdAt: new Date().toISOString()
+            createdAt: editingId ? undefined : new Date().toISOString() // Keep original date if editing
         }
 
         // Load existing products
@@ -199,13 +240,30 @@ export default function Calculator() {
             console.error('Error loading products:', e)
         }
 
-        // Add new product
-        products.push(product)
+        if (editingId) {
+            // Update existing product
+            const index = products.findIndex(p => p.id === editingId)
+            if (index !== -1) {
+                // Preserve original createdAt
+                product.createdAt = products[index].createdAt
+                products[index] = product
+                alert(`✅ Producto "${productName}" actualizado exitosamente`)
+            } else {
+                // If not found (weird), add as new
+                product.createdAt = new Date().toISOString()
+                products.push(product)
+                alert(`⚠️ No se encontró el original, se guardó como nuevo: "${productName}"`)
+            }
+            setEditingId(null) // Exit edit mode
+        } else {
+            // Add new product
+            products.push(product)
+            alert(`✅ Producto "${productName}" guardado exitosamente`)
+        }
 
         // Save to localStorage
         try {
             localStorage.setItem('tanuki_products', JSON.stringify(products))
-            alert(`✅ Producto "${productName}" guardado exitosamente`)
         } catch (e) {
             console.error('Error saving product:', e)
             alert('❌ Error al guardar el producto. Por favor, intenta nuevamente.')
@@ -630,15 +688,25 @@ export default function Calculator() {
                         </div>
 
                         {/* Save Button */}
-                        <button
-                            onClick={saveProduct}
-                            className="w-full bg-gradient-to-r from-tanuki-500 to-tanuki-600 hover:from-tanuki-600 hover:to-tanuki-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 mt-4 flex items-center justify-center space-x-2"
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                            </svg>
-                            <span>Guardar Producto</span>
-                        </button>
+                        <div className="flex gap-3 mt-4">
+                            {editingId && (
+                                <button
+                                    onClick={cancelEdit}
+                                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+                                >
+                                    Cancelar
+                                </button>
+                            )}
+                            <button
+                                onClick={saveProduct}
+                                className="flex-1 bg-gradient-to-r from-tanuki-500 to-tanuki-600 hover:from-tanuki-600 hover:to-tanuki-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center space-x-2"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                                </svg>
+                                <span>{editingId ? 'Actualizar Producto' : 'Guardar Producto'}</span>
+                            </button>
+                        </div>
 
                         {/* Info Card */}
                         <div className="bg-gray-50 rounded-xl p-4 mt-4 border border-gray-200">

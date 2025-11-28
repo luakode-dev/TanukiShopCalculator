@@ -65,7 +65,7 @@ function App() {
             case 'calculator':
                 return <Calculator />
             case 'catalog':
-                return <Catalog />
+                return <Catalog navigateToSection={navigateToSection} />
             case 'settings':
                 return <Settings />
             default:
