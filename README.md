@@ -1,70 +1,123 @@
-# 🦝 Tanuki Shop Admin
+# Tanuki Shop Admin Panel
 
-Una herramienta interna moderna para gestionar costos y productos de sublimación.
+Panel de administración para gestión de costos y productos de sublimación.
 
-## 🚀 Características
+## 🚀 Tecnologías
 
-- **Dashboard**: Vista general con estadísticas clave
-- **Calculadora de Costos**: Calcula precios de productos (próximamente)
-- **Catálogo de Productos**: Gestiona tus cálculos guardados (próximamente)
-- **Configuración**: Define costos fijos como kWh, mano de obra e impuestos (próximamente)
+- **React 18** - Biblioteca de interfaz de usuario
+- **Vite** - Build tool y dev server ultrarrápido
+- **Tailwind CSS** - Framework de CSS utility-first
+- **JavaScript (ES6+)** - Lenguaje de programación
 
-## 🎨 Diseño
+## 📋 Requisitos
 
-- Paleta de colores Tanuki (naranjas y marrones suaves)
-- Diseño responsive para móvil y escritorio
-- Navegación lateral moderna con animaciones suaves
-- Interfaz limpia y profesional
+- Node.js 18+ 
+- npm 9+
 
-## 📦 Tecnologías
+## 🛠️ Instalación
 
-- **HTML5**: Estructura semántica
-- **Tailwind CSS**: Framework de estilos (vía CDN)
-- **Vanilla JavaScript**: Lógica de aplicación
-- **Google Fonts (Inter)**: Tipografía moderna
+1. Clona el repositorio:
+```bash
+git clone https://github.com/luakode-dev/TanukiShopCalculator.git
+cd TanukiShopCalculator
+```
 
-## 🏃‍♂️ Cómo Usar
+2. Instala las dependencias:
+```bash
+npm install
+```
 
-1. Abre el archivo `index.html` en tu navegador web
-2. No se requiere instalación ni servidor
-3. La aplicación funciona completamente offline
+## 🎯 Uso
 
-## 📱 Responsive
+### Modo Desarrollo
 
-La aplicación está optimizada para:
-- 📱 Móviles (< 768px)
-- 💻 Tablets (768px - 1024px)
-- 🖥️ Escritorio (> 1024px)
+Inicia el servidor de desarrollo:
+```bash
+npm run dev
+```
 
-## 🔧 Estructura del Proyecto
+La aplicación estará disponible en `http://localhost:5173`
+
+### Build de Producción
+
+Crea una build optimizada para producción:
+```bash
+npm run build
+```
+
+Los archivos generados estarán en la carpeta `dist/`
+
+### Preview de Producción
+
+Previsualiza la build de producción localmente:
+```bash
+npm run preview
+```
+
+## 📁 Estructura del Proyecto
 
 ```
 tanuki-shop-admin/
-├── index.html      # Estructura principal
-├── styles.css      # Estilos personalizados
-├── app.js          # Lógica de la aplicación
-└── README.md       # Este archivo
+├── src/
+│   ├── components/
+│   │   ├── Layout.jsx        # Layout principal con sidebar
+│   │   ├── Dashboard.jsx     # Vista del dashboard
+│   │   ├── Calculator.jsx    # Calculadora de costos
+│   │   ├── Catalog.jsx       # Catálogo de productos
+│   │   └── Settings.jsx      # Configuración
+│   ├── App.jsx               # Componente principal
+│   ├── main.jsx              # Punto de entrada
+│   └── index.css             # Estilos globales
+├── public/                   # Archivos estáticos
+├── index.html                # HTML principal
+├── package.json              # Dependencias y scripts
+├── vite.config.js            # Configuración de Vite
+├── tailwind.config.js        # Configuración de Tailwind
+└── postcss.config.js         # Configuración de PostCSS
 ```
 
-## 💾 Persistencia
+## ✨ Características
 
-La aplicación guarda automáticamente:
-- La última sección visitada (usando localStorage)
-- Navegación con historial del navegador
+- 🎨 Diseño moderno y responsive con Tailwind CSS
+- 🦝 Tema personalizado con colores Tanuki
+- 📱 Totalmente responsive (mobile-first)
+- ⚡ Navegación rápida con React Router
+- 💾 Persistencia de estado con localStorage
+- 🎯 Componentes reutilizables
 
-## 🎯 Próximos Pasos
+## 🎨 Paleta de Colores
 
-1. Implementar la **Calculadora de Costos** con formularios interactivos
-2. Crear el sistema de **Catálogo** para guardar productos
-3. Desarrollar la página de **Configuración** para costos fijos
-4. Agregar funcionalidad de exportación (PDF/Excel)
+El proyecto utiliza una paleta de colores personalizada "Tanuki":
+- Primario: Naranja (#EA580C - #F97316)
+- Secundario: Marrón (#44403C - #78716C)
 
-## 📝 Notas
+## 📝 Secciones
 
-- No se requiere Node.js ni npm
-- Todos los recursos se cargan vía CDN
-- Compatible con navegadores modernos
+1. **Dashboard** - Vista general del negocio
+2. **Calculadora de Costos** - Calcula precios de productos
+3. **Catálogo de Productos** - Gestiona productos guardados
+4. **Configuración** - Define costos fijos y parámetros
+
+## 🤝 Contribuir
+
+Las contribuciones son bienvenidas. Por favor:
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+
+## 👤 Autor
+
+**luakode-dev**
+- GitHub: [@luakode-dev](https://github.com/luakode-dev)
+- Email: lua.kode@gmail.com
 
 ---
 
-Desarrollado con 🧡 para Tanuki Shop
+Hecho con ❤️ y 🦝 por luakode-dev
