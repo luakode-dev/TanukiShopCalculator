@@ -6,7 +6,7 @@ export default function Catalog() {
                 <p className="text-gray-600">Todos tus cálculos guardados en un solo lugar</p>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
+            <div className="bg-white rounded-2xl p-6 shadow-xs">
                 <div className="text-center py-12">
                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

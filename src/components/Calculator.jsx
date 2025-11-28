@@ -142,7 +142,7 @@ export default function Calculator() {
                 {/* Form Section */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Product Information */}
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-50">
+                    <div className="bg-white rounded-2xl p-6 shadow-xs border border-gray-50">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                             <div className="w-8 h-8 bg-tanuki-100 rounded-lg flex items-center justify-center mr-3">
                                 <svg className="w-5 h-5 text-tanuki-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -186,7 +186,7 @@ export default function Calculator() {
                     </div>
 
                     {/* Direct Costs */}
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-50">
+                    <div className="bg-white rounded-2xl p-6 shadow-xs border border-gray-50">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                             <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                                 <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -260,7 +260,7 @@ export default function Calculator() {
                     </div>
 
                     {/* Indirect Costs */}
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-50">
+                    <div className="bg-white rounded-2xl p-6 shadow-xs border border-gray-50">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                             <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
                                 <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -340,7 +340,7 @@ export default function Calculator() {
                     </div>
 
                     {/* Margins and Sales Channels */}
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-50">
+                    <div className="bg-white rounded-2xl p-6 shadow-xs border border-gray-50">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                             <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
                                 <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -389,7 +389,7 @@ export default function Calculator() {
                                         type="checkbox"
                                         checked={isMercadoLibre}
                                         onChange={(e) => setIsMercadoLibre(e.target.checked)}
-                                        className="w-5 h-5 text-tanuki-600 border-gray-300 rounded focus:ring-tanuki-500 cursor-pointer"
+                                        className="w-5 h-5 text-tanuki-600 border-gray-300 rounded-sm focus:ring-tanuki-500 cursor-pointer"
                                     />
                                     <span className="text-sm font-medium text-gray-700 group-hover:text-tanuki-600 transition-colors">
                                         ¿Es venta por Mercado Libre?
@@ -424,7 +424,7 @@ export default function Calculator() {
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">Resultados</h3>
 
                         {/* Manufacturing Cost Card */}
-                        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 mb-4">
+                        <div className="bg-linear-to-br from-blue-500 to-blue-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 mb-4">
                             <div className="flex items-center justify-between mb-2">
                                 <span className="text-blue-100 text-sm font-medium">Costo Total de Fabricación</span>
                                 <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
@@ -442,7 +442,7 @@ export default function Calculator() {
                         </div>
 
                         {/* Suggested Price Card */}
-                        <div className="bg-gradient-to-br from-tanuki-500 to-tanuki-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 mb-4">
+                        <div className="bg-linear-to-br from-tanuki-500 to-tanuki-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 mb-4">
                             <div className="flex items-center justify-between mb-2">
                                 <span className="text-tanuki-100 text-sm font-medium">Precio de Venta Sugerido</span>
                                 <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
@@ -460,7 +460,7 @@ export default function Calculator() {
                         </div>
 
                         {/* Net Profit Card */}
-                        <div className={`bg-gradient-to-br ${netProfit >= 0 ? 'from-green-500 to-green-600' : 'from-red-500 to-red-600'} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1`}>
+                        <div className={`bg-linear-to-br ${netProfit >= 0 ? 'from-green-500 to-green-600' : 'from-red-500 to-red-600'} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1`}>
                             <div className="flex items-center justify-between mb-2">
                                 <span className="text-white/90 text-sm font-medium">Ganancia Neta Real</span>
                                 <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">

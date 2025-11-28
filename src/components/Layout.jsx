@@ -76,7 +76,7 @@ export default function Layout({
             {/* Sidebar */}
             <aside
                 className={`
-          w-[280px] bg-gradient-to-b from-tanuki-600 to-tanuki-700 
+          w-[280px] bg-linear-to-b from-tanuki-600 to-tanuki-700 
           border-r border-white/10 transition-transform duration-300 ease-in-out
           lg:relative lg:translate-x-0 fixed top-0 left-0 bottom-0 z-30
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -87,7 +87,7 @@ export default function Layout({
                     {/* Logo/Header */}
                     <div className="px-4 py-6 border-b border-white/10 flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                            <div className="w-12 h-12 bg-gradient-to-br from-tanuki-300 to-tanuki-400 rounded-xl flex items-center justify-center text-2xl shadow-lg hover:scale-105 transition-transform">
+                            <div className="w-12 h-12 bg-linear-to-br from-tanuki-300 to-tanuki-400 rounded-xl flex items-center justify-center text-2xl shadow-lg hover:scale-105 transition-transform">
                                 🦝
                             </div>
                             <div>
@@ -116,7 +116,7 @@ export default function Layout({
                   text-sm font-medium transition-all duration-200
                   relative overflow-hidden group
                   ${currentSection === item.id
-                                        ? 'bg-white/15 text-white shadow-sm'
+                                        ? 'bg-white/15 text-white shadow-xs'
                                         : 'text-white/80 hover:bg-white/10 hover:text-white hover:translate-x-0.5'
                                     }
                 `}

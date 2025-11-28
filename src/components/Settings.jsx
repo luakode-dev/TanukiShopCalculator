@@ -6,7 +6,7 @@ export default function Settings() {
                 <p className="text-gray-600">Define tus costos fijos y parámetros del negocio</p>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
+            <div className="bg-white rounded-2xl p-6 shadow-xs">
                 <p className="text-gray-600 text-center py-8">
                     La configuración estará disponible próximamente.
                 </p>
